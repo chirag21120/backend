@@ -7,7 +7,7 @@ const jwt = require('jsonwebtoken');
 const fetchuser = require('../middleware/fetchUser');
 
 const JWT_SECRET = process.env.JWT_SECRET;
-//Route 1: Create a user using Post "/api/auth/". Doesn't require auth
+//Route 1: Create a user using Post "/api/auth/createuser". Doesn't require auth
 router.post('/createuser',[
     //validators, used to check the input
     body('name',"Enter a valid name").isLength({min:3}),
