@@ -4,9 +4,10 @@ const { body, validationResult } = require('express-validator');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const fetchuser = require('../middleware/fetchUser');
 
 const JWT_SECRET = process.env.JWT_SECRET;
-//Create a user using Post "/api/auth/". Doesn't require auth
+//Route 1: Create a user using Post "/api/auth/". Doesn't require auth
 router.post('/createuser',[
     //validators, used to check the input
     body('name',"Enter a valid name").isLength({min:3}),
@@ -49,7 +50,7 @@ catch(error){
 })
 
 
-//Authenticating a user using Post "/api/auth/login". Doesn't require auth
+//Route 2: Authenticating a user using Post "/api/auth/login". Doesn't require auth
 router.post('/login',[
     body('email',"Enter a valid email").isEmail(),
     body('password',"Password cannot be blank").exists(),
@@ -84,4 +85,16 @@ router.post('/login',[
     }
 })
 
+
+// Route 3: Get logedin user details using Post "/api/auth/getuser".  requires login
+//fetchuser is a middleware which is used to get the details of the logedin user
+router.post('/getuser',fetchuser,async (req,res)=>{
+try {
+   const userId = req.user.id;
+    const user = await User.findById(userId).select('-password');
+    res.send(user);  
+} catch (error) {
+    
+}
+})
 module.exports = router
